@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
@@ -35,7 +36,10 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         try {
-            $item = Item::create($request->all());
+            $userId = Auth::user()->id;
+            $itemData = $request->all();
+            $itemData['id_seller'] = $userId;
+            $item = Item::create($itemData);
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil insert data',

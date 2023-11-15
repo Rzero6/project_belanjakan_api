@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('verify_key');
             $table->string('phone');
             $table->date('date_of_birth');
-            $table->string('profile_picture')->nullable();
+            $table->longText('profile_picture')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

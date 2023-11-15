@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('detail');
-            $table->string('image');
+            $table->longText('image');
             $table->integer('price');
             $table->integer('stock');
+            $table->foreignId('id_seller')->constrained('users','id')->onDelete('cascade');
             $table->timestamps();
         });
     }

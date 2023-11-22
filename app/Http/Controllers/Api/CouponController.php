@@ -3,23 +3,27 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Coupon;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
-class ItemController extends Controller
+class CouponController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         try {
-            $items = Item::all();
+
+            $user = Auth::user();
+            $coupons = DB::table('coupons')
+                ->where('id_user', $user->id)
+                ->get();
+            if ($coupons->isEmpty()) throw new \Exception('There is no Coupon yet');
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil ambil data',
-                'data' => $items
+                'data' => $coupons
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -36,14 +40,15 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         try {
-            $userId = Auth::user()->id;
-            $itemData = $request->all();
-            $itemData['id_seller'] = $userId;
-            $item = Item::create($itemData);
+            $couponData = $request->all();
+            $user = User::find($request->id_user);
+
+            if (!$user) throw new \Exception('User not found');
+            $coupon = Coupon::create($couponData);
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil insert data',
-                'data' => $item
+                'data' => $coupon
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -60,12 +65,12 @@ class ItemController extends Controller
     public function show($id)
     {
         try {
-            $item = Item::find($id);
-            if (!$item) throw new \Exception('Barang tidak ditemukan');
+            $coupon = Coupon::find($id);
+            if (!$coupon) throw new \Exception('Coupon not found');
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil ambil data',
-                'data' => $item
+                'data' => $coupon
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -82,13 +87,13 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $item = Item::find($id);
-            if (!$item) throw new \Exception('Barang tidak ditemukan');
-            $item->update($request->all());
+            $coupon = Coupon::find($id);
+            if (!$coupon) throw new \Exception('Coupon not found');
+            $coupon->update($request->all());
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil update data',
-                'data' => $item
+                'data' => $coupon
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -105,60 +110,13 @@ class ItemController extends Controller
     public function destroy($id)
     {
         try {
-            $item = Item::find($id);
-            if (!$item) throw new \Exception('Barang tidak ditemukan');
-            $item->delete();
+            $coupon = Coupon::find($id);
+            if (!$coupon) throw new \Exception('Coupon not found');
+            $coupon->delete();
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil delete data',
-                'data' => $item
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
-    }
-
-    public function showByName($searchTerm)
-    {
-        try {
-            $items = Item::where('name', 'like', '%' . $searchTerm . '%')->get();
-
-            if ($items->isEmpty()) {
-                throw new \Exception('No items found with the specified search term');
-            }
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Successfully retrieved data',
-                'data' => $items
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
-    }
-    public function showOnlyToOwnerByName($searchTerm)
-    {
-        try {
-            $user = Auth::user();
-            if (!$user) throw new \Exception('User not found');
-            $items = Item::where('id_seller', $user->id)->where('name', 'like', '%' . $searchTerm . '%')->get();
-
-            if ($items->isEmpty()) {
-                throw new \Exception('No items');
-            }
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Successfully retrieved data',
-                'data' => $items
+                'data' => $coupon
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -144,4 +144,27 @@ class ItemController extends Controller
             ], 400);
         }
     }
+
+    public function showBySeller($searchTerm)
+    {
+        try {
+            $items = Item::where('id_seller', '=', Auth::id())->where('name', 'like', '%' . $searchTerm . '%')->get();
+
+            if ($items->isEmpty()) {
+                throw new \Exception('No items found with the specified search term');
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully retrieved data',
+                'data' => $items
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
+    }
 }

@@ -6,12 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\ImageFile;
 
 class ItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private function base64_to_jpeg($base64_string, $output_file)
+    {
+        $file = base64_decode($base64_string);
+        $img_file = public_path('/images') . "/$output_file";
+        // file_put_contents($img_file, $file);
+    }
+
     public function index()
     {
         try {
@@ -38,7 +44,26 @@ class ItemController extends Controller
         try {
             $userId = Auth::user()->id;
             $itemData = $request->all();
+
+            $validate = Validator::make($itemData, [
+                'name' => 'required',
+                'detail' => 'required',
+                'image' => 'required',
+                'price' => 'required',
+                'stock' => 'required|numeric',
+            ]);
+            print('goes here');
+            if ($validate->fails()) {
+                return response()->json(['message' => $validate->errors()], 400);
+            }
+
             $itemData['id_seller'] = $userId;
+            $imageName = time() . '.jpg';
+            $this->base64_to_jpeg($request->image, $imageName);
+            $itemData['image'] = $imageName;
+
+            print('goes here');
+
             $item = Item::create($itemData);
             return response()->json([
                 'status' => true,

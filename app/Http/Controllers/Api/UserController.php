@@ -11,6 +11,12 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    private function base64_to_jpeg($base64_string, $output_file)
+    {
+        $file = base64_decode($base64_string);
+        $img_file = public_path('/images/user') . "/$output_file";
+        file_put_contents($img_file, $file);
+    }
 
     public function show()
     {
@@ -58,6 +64,15 @@ class UserController extends Controller
 
         if ($request->has('password')) {
             $updatedUserData['password'] = bcrypt($request->password);
+        }
+
+        if ($request->has('profile_picture')) {
+            $imageName = time() . '.jpg';
+            $this->base64_to_jpeg($request->profile_picture, $imageName);
+            $updatedUserData['profile_picture'] = '/images/user/' . $imageName;
+            if ($userToUpdate->profile_picture !== null && file_exists(public_path($userToUpdate->profile_picture))) {
+                unlink(public_path($userToUpdate->profile_picture));
+            }
         }
 
         // Update only provided fields

@@ -14,8 +14,8 @@ class ItemController extends Controller
     private function base64_to_jpeg($base64_string, $output_file)
     {
         $file = base64_decode($base64_string);
-        $img_file = public_path('/images') . "/$output_file";
-        // file_put_contents($img_file, $file);
+        $img_file = public_path('/images/item') . "/$output_file";
+        file_put_contents($img_file, $file);
     }
 
     public function index()
@@ -52,7 +52,6 @@ class ItemController extends Controller
                 'price' => 'required',
                 'stock' => 'required|numeric',
             ]);
-            print('goes here');
             if ($validate->fails()) {
                 return response()->json(['message' => $validate->errors()], 400);
             }
@@ -60,9 +59,7 @@ class ItemController extends Controller
             $itemData['id_seller'] = $userId;
             $imageName = time() . '.jpg';
             $this->base64_to_jpeg($request->image, $imageName);
-            $itemData['image'] = $imageName;
-
-            print('goes here');
+            $itemData['image'] = '/images/item/' . $imageName;
 
             $item = Item::create($itemData);
             return response()->json([
@@ -108,8 +105,25 @@ class ItemController extends Controller
     {
         try {
             $item = Item::find($id);
+            $updatedData = $request->all();
             if (!$item) throw new \Exception('Barang tidak ditemukan');
-            $item->update($request->all());
+            $validate = Validator::make($updatedData, [
+                'name' => 'required',
+                'detail' => 'required',
+                'image' => 'required',
+                'price' => 'required',
+                'stock' => 'required|numeric',
+            ]);
+            if ($validate->fails()) {
+                return response()->json(['message' => $validate->errors()], 400);
+            }
+            $imageName = time() . '.jpg';
+            $this->base64_to_jpeg($request->image, $imageName);
+            $updatedData['image'] = '/images/item/' . $imageName;
+            if (file_exists(public_path($item->image))) {
+                unlink(public_path($item->image));
+            }
+            $item->update($updatedData);
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil update data',
@@ -132,6 +146,9 @@ class ItemController extends Controller
         try {
             $item = Item::find($id);
             if (!$item) throw new \Exception('Barang tidak ditemukan');
+            if (file_exists(public_path($item->image))) {
+                unlink(public_path($item->image));
+            }
             $item->delete();
             return response()->json([
                 'status' => true,

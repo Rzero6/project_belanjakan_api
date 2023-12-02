@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\ImageFile;
 
+use function PHPUnit\Framework\isNan;
+
 class ItemController extends Controller
 {
     private function base64_to_jpeg($base64_string, $output_file)
@@ -110,18 +112,19 @@ class ItemController extends Controller
             $validate = Validator::make($updatedData, [
                 'name' => 'required',
                 'detail' => 'required',
-                'image' => 'required',
                 'price' => 'required',
                 'stock' => 'required|numeric',
             ]);
             if ($validate->fails()) {
                 return response()->json(['message' => $validate->errors()], 400);
             }
-            $imageName = time() . '.jpg';
-            $this->base64_to_jpeg($request->image, $imageName);
-            $updatedData['image'] = '/images/item/' . $imageName;
-            if (file_exists(public_path($item->image))) {
-                unlink(public_path($item->image));
+            if ($request->image && strpos($request->image, '/images/item') !== 0) {
+                $imageName = time() . '.jpg';
+                $this->base64_to_jpeg($request->image, $imageName);
+                $updatedData['image'] = '/images/item/' . $imageName;
+                if (file_exists(public_path($item->image))) {
+                    unlink(public_path($item->image));
+                }
             }
             $item->update($updatedData);
             return response()->json([
@@ -187,7 +190,7 @@ class ItemController extends Controller
         }
     }
 
-    public function showOnlyToOwnerByName($searchTerm)
+    public function showOnlyToOwnerByName($searchTerm = null)
     {
         try {
             $user = Auth::user();

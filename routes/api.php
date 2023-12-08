@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DetailTransactionController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +31,14 @@ Route::get("/items", [ItemController::class, "index"]);
 Route::get("/items/{id}", [ItemController::class, "show"]);
 Route::get("/items/search/q={searchTerm}", [ItemController::class, "showByName"]);
 
+Route::get("/categories", [CategoryController::class, "index"]);
+Route::get("/categories/{id}", [CategoryController::class, "show"]);
+Route::post("/categories", [CategoryController::class, "store"]);
+Route::put("/categories/{id}", [CategoryController::class, "update"]);
+Route::delete("/categories/{id}", [CategoryController::class, "destroy"]);
+
+Route::get('/reviews/item/{id}', [ReviewController::class, "showPerItem"]);
+
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post("/items", [ItemController::class, "store"]);
     Route::get("/items/auth/search/q={searchTerm?}", [ItemController::class, "showOnlyToOwnerByName"])
@@ -48,4 +60,18 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get("/carts/{id}", [CartController::class, "show"]);
     Route::put("/carts/{id}", [CartController::class, "update"]);
     Route::delete("/carts/{id}", [CartController::class, "destroy"]);
+
+    Route::get("/transactions", [TransactionController::class, "index"]);
+    Route::post("/transactions", [TransactionController::class, "store"]);
+    Route::get("/transactions/{id}", [TransactionController::class, "show"]);
+    Route::put("/transactions/{id}", [TransactionController::class, "update"]);
+
+    Route::get("/transactions/{id}/details", [DetailTransactionController::class, "showByTransaction"]);
+    Route::post("/transactions/details", [DetailTransactionController::class, "store"]);
+
+    Route::post('/reviews', [ReviewController::class, "store"]);
+    Route::get('/reviews/{id}', [ReviewController::class, "show"]);
+    Route::put('/reviews/{id}', [ReviewController::class, "update"]);
+    Route::delete('/reviews/{id}', [ReviewController::class, "destroy"]);
+
 });

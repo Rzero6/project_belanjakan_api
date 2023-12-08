@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,10 +54,13 @@ class ItemController extends Controller
                 'image' => 'required',
                 'price' => 'required',
                 'stock' => 'required|numeric',
+                'id_category' => 'required',
             ]);
             if ($validate->fails()) {
                 return response()->json(['message' => $validate->errors()], 400);
             }
+            $categoryData = Category::find($itemData['id_category']);
+            if (!$categoryData) throw new \Exception('Category tidak ditemukan');
 
             $itemData['id_seller'] = $userId;
             $imageName = time() . '.jpg';
@@ -114,6 +118,7 @@ class ItemController extends Controller
                 'detail' => 'required',
                 'price' => 'required',
                 'stock' => 'required|numeric',
+                'id_category' => 'required',
             ]);
             if ($validate->fails()) {
                 return response()->json(['message' => $validate->errors()], 400);

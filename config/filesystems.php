@@ -32,8 +32,7 @@ return [
 
         'railway' => [
             'driver' => 'local',
-            'root' => env('RAILWAY_MOUNT_PATH', storage_path('app')),
-            'url' => env('APP_URL') . 'app/storage/public',
+            'root' => storage_path(env('RAILWAY_MOUNT_PATH')),
             'visibility' => 'public',
         ],
 

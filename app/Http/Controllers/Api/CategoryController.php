@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -41,11 +42,13 @@ class CategoryController extends Controller
             }
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $renameImage = time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = "/images/category/";
-                $image->move(public_path($destinationPath), $renameImage);
-                $imagePath = $destinationPath . $renameImage;
+                $imagePath = Storage::disk('railway')->put('images/category', $image);
                 $categoryData['image'] = $imagePath;
+                // $renameImage = time() . '.' . $image->getClientOriginalExtension();
+                // $destinationPath = "/images/category/";
+                // $image->move(public_path($destinationPath), $renameImage);
+                // $imagePath = $destinationPath . $renameImage;
+                // $categoryData['image'] = $imagePath;
             }
 
             $category = Category::create($categoryData);

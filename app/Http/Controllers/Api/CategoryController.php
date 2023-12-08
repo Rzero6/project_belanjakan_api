@@ -42,7 +42,7 @@ class CategoryController extends Controller
             }
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imagePath = Storage::disk('railway')->put('images/category/', $image);
+                $imagePath = Storage::disk('railway')->put('images/category', $image);
                 $categoryData['image'] = Storage::url($imagePath);
                 // $renameImage = time() . '.' . $image->getClientOriginalExtension();
                 // $destinationPath = "/images/category/";

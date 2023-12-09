@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -67,11 +68,15 @@ class UserController extends Controller
         }
 
         if ($request->has('profile_picture')) {
-            $imageName = time() . '.jpg';
-            $this->base64_to_jpeg($request->profile_picture, $imageName);
-            $updatedUserData['profile_picture'] = '/images/user/' . $imageName;
-            if ($userToUpdate->profile_picture !== null && file_exists(public_path($userToUpdate->profile_picture))) {
-                unlink(public_path($userToUpdate->profile_picture));
+            $file = base64_decode($request->profile_picture);
+            $imagePath = Storage::disk('railway')->put('images/item', $file);
+            $updatedUserData['profile_picture'] = Storage::url($imagePath);
+            // $imageName = time() . '.jpg';
+            // $this->base64_to_jpeg($request->profile_picture, $imageName);
+            // $updatedUserData['profile_picture'] = '/images/user/' . $imageName;
+            if ($userToUpdate->profile_picture !== null && file_exists(Storage::disk('railway')->exists($user->profile_picture->image))) {
+                // unlink(public_path($userToUpdate->profile_picture));
+                Storage::disk('railway')->delete($userToUpdate->image);
             }
         }
 

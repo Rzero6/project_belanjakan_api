@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\ImageFile;
 
@@ -63,9 +64,12 @@ class ItemController extends Controller
             if (!$categoryData) throw new \Exception('Category tidak ditemukan');
 
             $itemData['id_seller'] = $userId;
-            $imageName = time() . '.jpg';
-            $this->base64_to_jpeg($request->image, $imageName);
-            $itemData['image'] = '/images/item/' . $imageName;
+            // $imageName = time() . '.jpg';
+            // $this->base64_to_jpeg($request->image, $imageName);
+            // $itemData['image'] = '/images/item/' . $imageName;
+            $file = base64_decode($request->image);
+            $imagePath = Storage::disk('railway')->put('images/item', $file);
+            $itemData['image'] = Storage::url($imagePath);
 
             $item = Item::create($itemData);
             return response()->json([
@@ -124,11 +128,16 @@ class ItemController extends Controller
                 return response()->json(['message' => $validate->errors()], 400);
             }
             if ($request->image && strpos($request->image, '/images/item') !== 0) {
-                $imageName = time() . '.jpg';
-                $this->base64_to_jpeg($request->image, $imageName);
-                $updatedData['image'] = '/images/item/' . $imageName;
-                if (file_exists(public_path($item->image))) {
-                    unlink(public_path($item->image));
+                $file = base64_decode($request->image);
+                $imagePath = Storage::disk('railway')->put('images/item', $file);
+                $updatedData['image'] = Storage::url($imagePath);
+                // $this->base64_to_jpeg($request->image, $imageName);
+                // $updatedData['image'] = '/images/item/' . $imageName;
+                // if (file_exists(public_path($item->image))) {
+                //     unlink(public_path($item->image));
+                // }
+                if (Storage::disk('railway')->exists($item->image)) {
+                    Storage::disk('railway')->delete($item->image);
                 }
             }
             $item->update($updatedData);

@@ -29,6 +29,7 @@ Route::post("/login", [AuthController::class, "login"]);
 
 Route::get("/items", [ItemController::class, "index"]);
 Route::get("/items/{id}", [ItemController::class, "show"]);
+Route::get("/items/cat/{id}", [ItemController::class, "showByCat"]);
 Route::get("/items/search/q={searchTerm}", [ItemController::class, "showByName"]);
 
 Route::get("/categories", [CategoryController::class, "index"]);
@@ -73,5 +74,4 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/reviews/{id}', [ReviewController::class, "show"]);
     Route::put('/reviews/{id}', [ReviewController::class, "update"]);
     Route::delete('/reviews/{id}', [ReviewController::class, "destroy"]);
-
 });

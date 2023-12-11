@@ -172,10 +172,17 @@ class ItemController extends Controller
         }
     }
 
-    public function showByName($searchTerm)
+    public function showByName($id, $searchTerm)
     {
         try {
-            $items = Item::where('name', 'like', '%' . $searchTerm . '%')->get();
+            $query = Item::query();
+            if ($searchTerm !== null) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')->get();
+            }
+            if ($id !== null || $id !== 0) {
+                $query->where('id_category', $id);
+            }
+            $items = $query->get();
 
             if ($items->isEmpty()) {
                 throw new \Exception('No items found with the specified search term');

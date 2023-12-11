@@ -29,7 +29,7 @@ Route::post("/login", [AuthController::class, "login"]);
 
 Route::get("/items", [ItemController::class, "index"]);
 Route::get("/items/{id}", [ItemController::class, "show"]);
-Route::get("/items/search/q={searchTerm}", [ItemController::class, "showByName"]);
+Route::get("/items/search/{id}/q={searchTerm}", [ItemController::class, "showByName"]);
 
 Route::get("/categories", [CategoryController::class, "index"]);
 Route::get("/categories/{id}", [CategoryController::class, "show"]);
@@ -37,7 +37,7 @@ Route::post("/categories", [CategoryController::class, "store"]);
 Route::put("/categories/{id}", [CategoryController::class, "update"]);
 Route::delete("/categories/{id}", [CategoryController::class, "destroy"]);
 
-Route::get('/reviews/item/{id}', [ReviewController::class, "showPerItem"]);
+Route::get('/item/{id}/reviews', [ReviewController::class, "showPerItem"]);
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::post("/items", [ItemController::class, "store"]);

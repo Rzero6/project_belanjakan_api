@@ -15,9 +15,18 @@ class ReviewController extends Controller
     {
         try {
             $reviews = Review::where('id_item', $id)->get();
+            $totalReviews = $reviews->count();
+            $sumRatings = 0;
+            foreach ($reviews as $review) {
+                $sumRatings += $review->rating;
+            }
+
+            $averageRating = $totalReviews > 0 ? $sumRatings / $totalReviews : 0;
+
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil ambil data',
+                'rating' => $averageRating,
                 'data' => $reviews
             ], 200);
         } catch (\Exception $e) {
@@ -90,7 +99,7 @@ class ReviewController extends Controller
     {
         try {
             $review = Review::find($id);
-            if (!$review) throw new \Exception('Barang tidak ditemukan');
+            if (!$review) throw new \Exception('Review tidak ditemukan');
             $updatedData = $request->all();
             $validate = Validator::make($updatedData, [
                 'id_item' => 'required',

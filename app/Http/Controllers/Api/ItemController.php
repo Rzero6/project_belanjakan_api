@@ -104,6 +104,25 @@ class ItemController extends Controller
         }
     }
 
+    public function showByCat($id)
+    {
+        try {
+            $item = Item::where('id_category', $id)->get();
+            if (!$item) throw new \Exception('Barang tidak ditemukan');
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil ambil data',
+                'data' => $item
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      */

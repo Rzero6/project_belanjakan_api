@@ -165,6 +165,36 @@ class ItemController extends Controller
         }
     }
 
+
+    public function updateStock(Request $request, $id)
+    {
+        try {
+            $item = Item::find($id);
+            if (!$item) throw new \Exception('Barang tidak ditemukan');
+            $amount = $request['amount'];
+            if ($amount <= 0) {
+                throw new \Exception('Jumlah harus lebih dari nol');
+            }
+            if ($item->stock < $amount) {
+                throw new \Exception('Jumlah stok tidak mencukupi');
+            }
+            $updatedStock = $item->stock - $amount;
+            $item->stock = $updatedStock;
+            $item->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil update data',
+                'data' => $item
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */

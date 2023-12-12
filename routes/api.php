@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         ->where('searchTerm', '.*');
     Route::put("/items/{id}", [ItemController::class, "update"]);
     Route::delete("/items/{id}", [ItemController::class, "destroy"]);
+    Route::patch("/items/{id}", [ItemController::class, "updateStock"]);
 
     Route::put("/user", [UserController::class, "update"]);
     Route::get("/user", [UserController::class, "show"]);

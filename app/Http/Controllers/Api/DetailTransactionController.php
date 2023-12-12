@@ -44,6 +44,7 @@ class DetailTransactionController extends Controller
             }
             $transaction = Transaction::find($detailTransactionData['id_transaction']);
             if (!$transaction) throw new \Exception('Detail Transaksi tidak ditemukan');
+            $detailTransactionData['rated'] = false;
             $detailTransaction = DetailTransaction::create($detailTransactionData);
             return response()->json([
                 'status' => true,

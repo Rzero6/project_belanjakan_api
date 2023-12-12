@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('price');
             $table->integer('amount');
+            $table->boolean('rated');
             $table->timestamps();
         });
     }

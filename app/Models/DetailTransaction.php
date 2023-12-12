@@ -14,10 +14,11 @@ class DetailTransaction extends Model
         'name',
         'price',
         'amount',
+        'rated',
     ];
 
-    public function transaction(){
+    public function transaction()
+    {
         return $this->belongsTo(Transaction::class, 'id_transaction');
     }
-
 }

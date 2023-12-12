@@ -34,6 +34,23 @@ class UserController extends Controller
             "data" => $user,
         ], 200);
     }
+
+    public function showById($id)
+    {
+        $user = User::find($id);
+        if (is_null($user)) {
+            return response()->json([
+                "message" => "User not Found",
+                "data" => null,
+            ], 404);
+        }
+
+        return response()->json([
+            "message" => "User found",
+            "data" => $user,
+        ], 200);
+    }
+
     public function update(Request $request)
     {
         $updatedUserData = $request->only(['name', 'email', 'password', 'phone', 'profile_picture']);

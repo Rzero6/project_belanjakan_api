@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::put("/user", [UserController::class, "update"]);
     Route::get("/user", [UserController::class, "show"]);
+    Route::get("/user/{id}", [UserController::class, "showById"]);
 
     Route::get("/coupons", [CouponController::class, "index"]);
     Route::post("/coupons", [CouponController::class, "store"]);

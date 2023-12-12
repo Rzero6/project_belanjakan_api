@@ -191,17 +191,14 @@ class ItemController extends Controller
         }
     }
 
-    public function showByName($id, $searchTerm=null)
+    public function showByName($id, $searchTerm = null)
     {
         try {
-            $query = Item::query();
-            if ($searchTerm !== null) {
-                $query->where('name', 'like', '%' . $searchTerm . '%')->get();
+            if ($id == 0) {
+                $items = Item::where('name', 'like', '%' . $searchTerm . '%')->get();
+            } else {
+                $items = Item::where('name', 'like', '%' . $searchTerm . '%')->where('id_category', $id)->get();
             }
-            if ($id !== null || $id !== 0) {
-                $query->where('id_category', $id);
-            }
-            $items = $query->get();
 
             if ($items->isEmpty()) {
                 throw new \Exception('No items found with the specified search term');
@@ -210,12 +207,14 @@ class ItemController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Successfully retrieved data',
-                'data' => $items
+                'id_category' => $id,
+                'data' => $items,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
+                'id_category' => $id,
                 'data' => []
             ], 400);
         }

@@ -90,7 +90,7 @@ class TransactionController extends Controller
             }
 
             $validate = Validator::make($request->all(), [
-                'status' => 'required|in:ordered,ondelivery,delivered|alpha',
+                'status' => 'required|in:ordered,ondelivery,delivered,rated|alpha',
             ]);
 
             if ($validate->fails()) {

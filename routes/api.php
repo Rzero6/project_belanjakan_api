@@ -29,7 +29,7 @@ Route::post("/login", [AuthController::class, "login"]);
 
 Route::get("/items", [ItemController::class, "index"]);
 Route::get("/items/{id}", [ItemController::class, "show"]);
-Route::get("/items/search/{id}/q={searchTerm}", [ItemController::class, "showByName"]);
+Route::get("/items/search/{id}/q={searchTerm}", [ItemController::class, "showByName"])->where('searchTerm', '.*');
 Route::get("/items/cat/{id}", [ItemController::class, "showByCat"]);
 
 Route::get("/categories", [CategoryController::class, "index"]);

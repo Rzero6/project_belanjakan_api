@@ -191,7 +191,7 @@ class ItemController extends Controller
         }
     }
 
-    public function showByName($id, $searchTerm)
+    public function showByName($id, $searchTerm=null)
     {
         try {
             $query = Item::query();

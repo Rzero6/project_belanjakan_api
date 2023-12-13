@@ -59,4 +59,25 @@ class DetailTransactionController extends Controller
             ], 400);
         }
     }
+
+    public function update($id)
+    {
+        try {
+            $detailTransaction = DetailTransaction::find($id);
+            if (!$detailTransaction) throw new \Exception('Detail Transaksi tidak ditemukan');
+            $detailTransaction['rated'] = true;
+            $detailTransaction->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil update data',
+                'data' => $detailTransaction
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
+    }
 }

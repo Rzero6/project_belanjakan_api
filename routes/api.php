@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get("/transactions/{id}/details", [DetailTransactionController::class, "showByTransaction"]);
     Route::post("/transactions/details", [DetailTransactionController::class, "store"]);
+    Route::patch("/transactions/details/{id}", [DetailTransactionController::class, "update"]);
 
     Route::post('/reviews', [ReviewController::class, "store"]);
     Route::get('/reviews/{id}', [ReviewController::class, "show"]);

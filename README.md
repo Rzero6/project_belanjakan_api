@@ -73,7 +73,7 @@ php artisan serve
 | POST   | /categories      |
 | PUT    | /categories/{id} |
 | DELETE | /categories/{id} |
-###⭐ Reviews
+### ⭐ Reviews
 | Method | Endpoint           |
 | ------ | ------------------ |
 | GET    | /item/{id}/reviews |
@@ -99,6 +99,14 @@ php artisan serve
 | GET    | /transactions/{id}/details |
 | POST   | /transactions/details      |
 | PATCH  | /transactions/details/{id} |
+### 🏷️ Coupons
+| Method | Endpoint    |
+| ------ | ----------- |
+| GET    | /coupons      |
+| POST   | /coupons      |
+| GET    | /coupons/{id} |
+| PUT    | /coupons/{id} |
+| DELETE | /coupons/{id} |
 ---
 ## 📄 License
 
